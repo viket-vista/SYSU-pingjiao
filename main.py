@@ -1,10 +1,20 @@
 import time
+import os
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import ddddocr
 from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException
+from win32com.client import Dispatch
+import wget
+import zipfile
+
+
+def get_version_via_com(filename):
+    parser = Dispatch("Scripting.FileSystemObject")
+    version = parser.GetFileVersion(filename)
+    return version
 
 
 def ocr(file):
@@ -14,9 +24,36 @@ def ocr(file):
     return res
 
 
+def download_edgedriver(version):
+    wget.download("https://msedgedriver.azureedge.net/" + version + "/edgedriver_win64.zip", "./edgedriver_win64.zip")
+    file = zipfile.ZipFile("./edgedriver_win64.zip")
+    file.extractall("./")
+    file.close()
+    os.rename("./msedgedriver.exe", "./MicrosoftWebDriver.exe")
+
+
 if __name__ == '__main__':
-    browser = webdriver.Firefox()
-    browser.get("https://cas.sysu.edu.cn/cas/login?service=https%3A%2F%2Fjwxt.sysu.edu.cn%2Fjwxt%2Fapi%2Fsso%2Fcas%2Flogin%3Fpattern%3Dstudent-login")
+    browser = None
+    bro = input("选择你所使用的浏览器：1：firefox 2：chrome 3：edge")
+    if bro == '1':
+        browser = webdriver.Firefox(firefox_binary=r"C:/Program Files/Mozilla Firefox/firefox.exe")
+    elif bro == '2':
+        browser = webdriver.Chrome()
+    elif bro == '3':
+        edgepath = r"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
+        if os.path.exists(edgepath):
+            edgeversion = get_version_via_com(edgepath)
+            print("Your msedge version is ", edgeversion)
+            driverpath = r"./MicrosoftWebDriver.exe"
+            if os.path.exists(driverpath):
+                driverversion = get_version_via_com(driverpath)
+                print("Your msedgedriver version is ", driverversion)
+                if driverversion != edgeversion:
+                    download_edgedriver(edgeversion)
+            else:
+                download_edgedriver(edgeversion)
+        browser = webdriver.Edge("./MicrosoftWebDriver.exe")
+    browser.get("http://cas.sysu.edu.cn/cas/login?service=https%3A%2F%2Fjwxt.sysu.edu.cn%2Fjwxt%2Fapi%2Fsso%2Fcas%2Flogin%3Fpattern%3Dstudent-login")
     browser.find_element(By.XPATH, '//img[@id="captchaImg"]').screenshot("t.png")
     f = open("t.png", "rb+")
     data = f.read()
