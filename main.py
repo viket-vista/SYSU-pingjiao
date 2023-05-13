@@ -4,7 +4,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.wait import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 import ddddocr
-from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException, ElementNotInteractableException
+from selenium.common.exceptions import NoSuchElementException, ElementNotSelectableException
 
 
 def ocr(file):
@@ -47,7 +47,7 @@ if __name__ == '__main__':
         try:
             WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
         except Exception as e:
-            print (type(e),"::",e)
+            print(type(e), "::", e)
         try:
             browser.find_element(By.XPATH, "//input[@placeholder='请输入验证码']").click()
         except NoSuchElementException:
@@ -69,15 +69,14 @@ if __name__ == '__main__':
             try:
                 WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
             except Exception as e:
-                print (type(e),"::",e)
+                print(type(e), "::", e)
             try:
                 browser.find_element(By.XPATH, "//input[@placeholder='请输入验证码']")
             except NoSuchElementException:
                 print("成功，有验证码")
             else:
                 input("失败：请在浏览器输入验证码，验证完成后在此处按回车继续")
-        finally:
-            try:
-                WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
-            finally:
-                print("\n")
+                try:
+                    WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
+                except Exception as e:
+                    print(type(e), "::", e)
