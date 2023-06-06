@@ -80,7 +80,13 @@ if __name__ == '__main__':
         elements = len(browser.find_elements(By.XPATH, "//tr[contains(@class,'ant-table-row-level-0')]"))
         for i in range(1, elements):
             browser.find_element(By.XPATH, "//tr[contains(@class,'ant-table-row-level-0')][" + str(i) + "]//input").send_keys(browser.find_element(By.XPATH, "//tr[contains(@class,'ant-table-row-level-0')][" + str(i) + "]/td[3]").text)
-        browser.find_element(By.XPATH, "//span[text()='提 交']/..").click()
+        try:
+            browser.find_element(By.XPATH, "//span[text()='提 交']/..").click()
+        except NoSuchElementException:
+            print("评教完成\n")
+            browser.quit()
+            input("按回车结束\n")
+            exit()
         try:
             WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
         except Exception as e:
