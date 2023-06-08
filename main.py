@@ -30,6 +30,7 @@ def download_edgedriver(version):
     file.extractall("./")
     file.close()
     os.rename("./msedgedriver.exe", "./MicrosoftWebDriver.exe")
+    os.remove("./edgedriver_win64.zip")
 
 
 if __name__ == '__main__':
@@ -42,7 +43,6 @@ if __name__ == '__main__':
         options.add_experimental_option("excludeSwitches", ['enable-automation'])
         options.add_argument("--disable-blink-features=AutomationControlled")
         browser = webdriver.Chrome(options=options)
-        browser.get("https://jwxt.sysu.edu.cn")
     elif bro == '3':
         edgepath = r"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
         if os.path.exists(edgepath):
@@ -53,10 +53,14 @@ if __name__ == '__main__':
                 driverversion = get_version_via_com(driverpath)
                 print("Your msedgedriver version is ", driverversion)
                 if driverversion != edgeversion:
+                    os.remove("./MicrosoftWebDriver.exe")
                     download_edgedriver(edgeversion)
             else:
                 download_edgedriver(edgeversion)
-        browser = webdriver.Edge("./MicrosoftWebDriver.exe")
+        options = webdriver.EdgeOptions()
+        options.add_experimental_option("excludeSwitches", ['enable-automation'])
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        browser = webdriver.Edge(options=options, executable_path=".")
     browser.get("http://cas.sysu.edu.cn/cas/login?service=https%3A%2F%2Fjwxt.sysu.edu.cn%2Fjwxt%2Fapi%2Fsso%2Fcas%2Flogin%3Fpattern%3Dstudent-login")
     browser.find_element(By.XPATH, '//img[@id="captchaImg"]').screenshot("t.png")
     f = open("t.png", "rb+")
