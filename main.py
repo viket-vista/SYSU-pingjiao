@@ -35,7 +35,7 @@ def download_edgedriver(version):
 
 if __name__ == '__main__':
     browser = None
-    bro = input("选择你所使用的浏览器：1：firefox 2：chrome 3：edge")
+    bro = input("选择你所使用的浏览器：1：firefox 2：chrome 3：edge\n")
     if bro == '1':
         browser = webdriver.Firefox(firefox_binary=r"C:/Program Files/Mozilla Firefox/firefox.exe")
     elif bro == '2':
