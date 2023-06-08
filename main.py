@@ -38,7 +38,11 @@ if __name__ == '__main__':
     if bro == '1':
         browser = webdriver.Firefox(firefox_binary=r"C:/Program Files/Mozilla Firefox/firefox.exe")
     elif bro == '2':
-        browser = webdriver.Chrome()
+        options = webdriver.ChromeOptions()
+        options.add_experimental_option("excludeSwitches", ['enable-automation'])
+        options.add_argument("--disable-blink-features=AutomationControlled")
+        browser = webdriver.Chrome(options=options)
+        browser.get("https://jwxt.sysu.edu.cn")
     elif bro == '3':
         edgepath = r"C:/Program Files (x86)/Microsoft/Edge/Application/msedge.exe"
         if os.path.exists(edgepath):
@@ -68,8 +72,8 @@ if __name__ == '__main__':
             browser.find_element(By.XPATH, "//div[contains(@class,'cz-bo')]/div[1]//button").click()
         except NoSuchElementException:
             print("评教完成\n")
-            browser.quit()
             input("按回车结束\n")
+            browser.quit()
             exit()
         except ElementNotSelectableException:
             print("评教完成，有部分课程无法完成评教，请手动评教\n")
@@ -84,8 +88,8 @@ if __name__ == '__main__':
             browser.find_element(By.XPATH, "//span[text()='提 交']/..").click()
         except NoSuchElementException:
             print("评教完成\n")
-            browser.quit()
             input("按回车结束\n")
+            browser.quit()
             exit()
         try:
             WebDriverWait(browser, 10, 0.5).until_not(EC.presence_of_element_located((By.XPATH, "//i[contains(@class,'anticon-loading')]")))
